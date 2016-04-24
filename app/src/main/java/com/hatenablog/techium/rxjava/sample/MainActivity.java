@@ -25,13 +25,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         checkRxJavaOnError();
-        checkRxJavaOnErrorRetuen();
     }
 
     private void checkRxJavaOnError() {
         String[] urls = {"https://www.google.co.jp/?gws_rd=ssl",
-                "http://techium.hatenablog.com/",
-                "http://localhost/"};
+                "http://localhost/",
+                "http://techium.hatenablog.com/"};
 
         Observable
                 .from(urls)
@@ -63,64 +62,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }).subscribe(new Observer<Boolean>() {
 
-            @Override
-            public void onCompleted() {
-                Log.d("techium", "onCompleted");
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Log.d("techium", "onError");
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onNext(Boolean b) {
-                Log.d("techium", "onNext " + b);
-            }
-        });
-    }
-
-    private void checkRxJavaOnErrorRetuen() {
-        String[] urls = {"https://www.google.co.jp/?gws_rd=ssl",
-                "http://techium.hatenablog.com/",
-                "http://localhost/"};
-
-        Observable
-                .from(urls)
-                .subscribeOn(Schedulers.newThread())
-                .map(new Func1<String, Boolean>() {
-                    @Override
-                    public Boolean call(String s) {
-                        Log.d("techium", s);
-                        String result = null;
-                        Request request = new Request.Builder()
-                                .url(s)
-                                .get()
-                                .build();
-
-                        OkHttpClient client = new OkHttpClient.Builder()
-                                .connectTimeout(10, TimeUnit.SECONDS)
-                                .writeTimeout(10, TimeUnit.SECONDS)
-                                .readTimeout(10, TimeUnit.SECONDS)
-                                .build();
-                        try {
-                            Response response = client.newCall(request).execute();
-                            result = response.body().string();
-                        } catch (IOException e) {
-                            throw Exceptions.propagate(e);
-                        }
-
-                        return true;
-                    }
-                }).onErrorReturn(new Func1<Throwable, Boolean>() {
-            @Override
-            public Boolean call(Throwable throwable) {
-                Log.d("techium", "onErrorReturn");
-                throwable.printStackTrace();
-                return false;
-            }
-        }).subscribe(new Observer<Boolean>() {
             @Override
             public void onCompleted() {
                 Log.d("techium", "onCompleted");
